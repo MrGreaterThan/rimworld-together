@@ -72,6 +72,6 @@ You can view real-time logs of the game server by running `docker-compose logs -
 
 ## Running the Game Server on Unraid
 
-You can easily deploy the Rimworld Together game server on Unraid using the provided Unraid app template. (Follow the steps here [unraid-template/README.md](unraid-template/README.md)) to install and configure the game server.
+You can easily deploy the Rimworld Together game server on Unraid using the provided Unraid app template. Follow the steps here ([unraid-template/README.md](unraid-template/README.md)) to install and configure the game server.
 
 
