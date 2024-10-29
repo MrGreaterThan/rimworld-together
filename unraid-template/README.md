@@ -2,50 +2,68 @@
 
 This Unraid app template allows you to easily install and run the **Rimworld Together** game server on your Unraid server using Docker. The container is hosted on GitHub Container Registry (GHCR).
 
-## Prerequisites
+## GUI Install
 
-- **Community Applications** Plugin installed on Unraid (if not installed, please refer to Unraid documentation).
-- A working Unraid server (version 6.9.0 or newer recommended).
-- Internet access for your server to pull Docker images.
+### 1. Navigate to the Docker tab of your Unraid server.
 
-## Step-by-Step Instructions
-
-### 1. Add the App Template Repository
-
-1. In the Unraid web interface, navigate to the **Apps** tab.
-2. Click on **Settings** in the top-right corner of the Apps tab.
-3. Scroll down to **Repositories** and click **Add**.
-4. In the **Repository URL** field, enter the URL for this GitHub repository containing the app template: https://github.com/MrGreaterThan/rimworld-together
-5. Click **Save**. This will add the Rimworld Together app template to Unraid.
-
-### 2. Install the Rimworld Together App
-
-1. Go to the **Apps** tab in Unraid and search for `Rimworld Together`.
-2. Click on the **Rimworld Together** app from the search results.
-3. Click **Install**.
+### 2. At the bottom of the Docker tab select "Add Container".
 
 ### 3. Configure the Docker Container
+#### Recommended settings:
+- **Template:** Leave blank
+- **Name:** `Rimworld-Together`
+- **Overview:** Leave blank
+- **Additional Requirements:** leave blank
+- **Repository:** `https://github.com/MrGreaterThan/rimworld-together:latest`
+    ##### Container tag may be changed from `latest` to a specific version of Rimworld Together if needed.
+- **Network Type:** `bridge`
+- **Console shell command:** `bash`
+- **Privileged:** `false`
 
-After clicking **Install**, you'll be presented with a configuration screen. Review and adjust the following settings as needed:
+#### The following settings are added by using the "Add another Path, Port, Variable, Label or Device" button. Review and adjust the following settings as needed:
 
-#### Ports:
-- **Game Port**: The port used for the game server (default: `25555`).
+#### Port:
+- **Name**: `game-port`
+- **Container Port**: `25555`
+- **Default Value:** `25555`
+- **Connection Type:** `TCP`
+- **Description:** `used for the game server`
 
 #### Volume Mappings:
-- **Backups**: Path to store game backups. Default: `/mnt/user/appdata/rimworld-together/Backups`.
-- **Caravans**: Path for caravans. Default: `/mnt/user/appdata/rimworld-together/Caravans`.
-- **Core**: Path for most configuration files. Default: `/mnt/user/appdata/rimworld-together/Core`.
-- **Events**: Path for game events. Default: `/mnt/user/appdata/rimworld-together/Events`.
-- **Factions**: Path for factions. Default: `/mnt/user/appdata/rimworld-together/Factions`.
-- **Logs**: Path for logs. Default: `/mnt/user/appdata/rimworld-together/Logs`.
-- **Maps**: Path for maps. Default: `/mnt/user/appdata/rimworld-together/Maps`.
-- **Saves**: Path for saved games. Default: `/mnt/user/appdata/rimworld-together/Saves`.
-- **Settlements**: Path for settlements. Default: `/mnt/user/appdata/rimworld-together/Settlements`.
-- **Sites**: Path for sites. Default: `/mnt/user/appdata/rimworld-together/Sites`.
-- **Users**: Path for user data. Default: `/mnt/user/appdata/rimworld-together/Users`.
-
-#### Environment Variables:
-- **Game Version**: Set the `VERSION` environment variable to specify a game version (default: `latest`).
+Make all volumes read/write
+- **Backups**: Path to store game backups.
+  - Container Path: `/opt/rimworld-together/Backups`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Backups`.
+- **Caravans**: Path for caravans.
+  - Container Path: `/opt/rimworld-together/Caravans`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Caravans`.
+- **Core**: Path for most configuration files.
+  - Container Path: `/opt/rimworld-together/Core`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Core`.
+- **Events**: Path for game events.
+  - Container Path: `/opt/rimworld-together/Events`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Events`.
+- **Factions**: Path for factions.
+  - Container Path: `/opt/rimworld-together/Factions`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Factions`.
+- **Logs**: Path for logs.
+  - Container Path: `/opt/rimworld-together/Logs`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Logs`.
+- **Maps**: Path for saved maps.
+  - Container Path: `/opt/rimworld-together/Maps`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Maps`.
+- **Saves**: Path for saved games.
+  - Container Path: `/opt/rimworld-together/Saves`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Saves`.
+- **Settlements**: Path for settlements.
+  - Container Path: `/opt/rimworld-together/Settlements`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Settlements`.
+- **Sites**: Path for sites.
+  - Container Path: `/opt/rimworld-together/Sites`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Sites`.
+- **Users**: Path for user data.
+  - Container Path: `/opt/rimworld-together/Users`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Users`.
 
 ### 4. Start the Container
 
