@@ -1,55 +1,78 @@
-name: Build and Push Docker Image
+name: Check for New Release in Another Repo
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
   workflow_dispatch:
 
 jobs:
-  build:
+  check_release:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Step 2: Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # Step 3: Fetch the latest release version from GitHub API
-      - name: Get latest release version
-        id: get_version
+      # Step 1: Set up GitHub CLI (gh) to access the GitHub API
+      - name: Set up GitHub CLI
         run: |
-          VERSION=$(curl -s https://api.github.com/repos/Byte-Nova/Rimworld-Together/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-          if [ -z "$VERSION" ]; then
-            echo "Failed to fetch version from GitHub."
-            exit 1
-          fi
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Latest version is $VERSION."
+          sudo apt-get install -y gh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set the GH_TOKEN environment variable
 
-      # Step 4: Log in to GitHub Container Registry (GHCR)
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+      # Step 2: Restore cache for the previous release information
+      - name: Restore previous release cache
+        id: cache_previous_release
+        uses: actions/cache@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          path: .previous_release
+          key: previous-release
 
-      # Step 5: Build the Docker image with both the version and latest tags (lowercase repository)
-      - name: Build Docker image
+      # Step 3: Fetch the latest release from the other repository
+      - name: Get latest release from other repository
+        id: get_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LOWERCASE_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          docker build --build-arg VERSION=$VERSION -t ghcr.io/$LOWERCASE_REPO:$VERSION .
-          docker tag ghcr.io/$LOWERCASE_REPO:$VERSION ghcr.io/$LOWERCASE_REPO:latest
+          repo_owner="Byte-Nova"
+          repo_name="Rimworld-Together"
 
-      # Step 6: Push the Docker image to GHCR (both version and latest tags)
-      - name: Push Docker image
+          # Use GitHub CLI to get the latest release tag
+          latest_release=$(gh api repos/${repo_owner}/${repo_name}/releases/latest --jq '.tag_name')
+          echo "Latest release: $latest_release"
+
+          # Save the latest release tag in an environment file to use later
+          echo "LATEST_RELEASE=$latest_release" >> $GITHUB_ENV
+
+      # Step 4: Compare with the previous release (stored in cache)
+      - name: Check for new release
+        id: check_release
         run: |
-          LOWERCASE_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          docker push ghcr.io/$LOWERCASE_REPO:$VERSION
-          docker push ghcr.io/$LOWERCASE_REPO:latest
+          previous_release=$(cat .previous_release || echo "none")
+          latest_release="${{ env.LATEST_RELEASE }}"
+          echo "Previous release: $previous_release"
+          echo "Latest release: $latest_release"
+
+          if [ "$previous_release" != "$latest_release" ]; then
+            echo "New release detected!"
+            echo "$latest_release" > .previous_release
+            echo "NEW_RELEASE=true" >> $GITHUB_ENV
+          else
+            echo "No new release."
+            echo "NEW_RELEASE=false" >> $GITHUB_ENV
+          fi
+
+      # Step 5: Cache the new release information if a new release is detected
+      - name: Cache the new release info
+        if: env.NEW_RELEASE == 'true'
+        uses: actions/cache@v3
+        with:
+          path: .previous_release
+          key: previous-release
+
+      # Step 6: Trigger the docker-build.yml workflow if a new release is detected
+      - name: Trigger Docker build workflow
+        if: env.NEW_RELEASE == 'true'
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/docker-build.yml/dispatches \
+            -d '{"ref": "main"}'
