@@ -32,8 +32,8 @@ jobs:
             echo "Failed to fetch version from GitHub."
             exit 1
           fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Latest version is $VERSION."
-          echo "::set-output name=VERSION::$VERSION"
 
       # Step 4: Log in to GitHub Container Registry (GHCR)
       - name: Log in to GitHub Container Registry
@@ -46,12 +46,14 @@ jobs:
       # Step 5: Build the Docker image with both the version and latest tags
       - name: Build Docker image
         run: |
-          docker build --build-arg VERSION=${{ steps.get_version.outputs.VERSION }} -t ghcr.io/${{ github.actor }}/rimworld-together:${{ steps.get_version.outputs.VERSION }} .
-          docker tag ghcr.io/${{ github.actor }}/rimworld-together:${{ steps.get_version.outputs.VERSION }} ghcr.io/${{ github.actor }}/rimworld-together:latest
+          LOWERCASE_ACTOR=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker build --build-arg VERSION=$VERSION -t ghcr.io/$LOWERCASE_ACTOR/rimworld-together:$VERSION .
+          docker tag ghcr.io/$LOWERCASE_ACTOR/rimworld-together:$VERSION ghcr.io/$LOWERCASE_ACTOR/rimworld-together:latest
 
       # Step 6: Push the Docker image to GHCR (both version and latest tags)
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.actor }}/rimworld-together:${{ steps.get_version.outputs.VERSION }}
-          docker push ghcr.io/${{ github.actor }}/rimworld-together:latest
+          LOWERCASE_ACTOR=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/$LOWERCASE_ACTOR/rimworld-together:$VERSION
+          docker push ghcr.io/$LOWERCASE_ACTOR/rimworld-together:latest
 
