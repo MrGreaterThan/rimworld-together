@@ -21,6 +21,8 @@ jobs:
       # Step 2: Fetch the latest release from the other repository
       - name: Get latest release from other repository
         id: get_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Replace with the owner and repo name of the other repository
           repo_owner="Byte-Nova"
