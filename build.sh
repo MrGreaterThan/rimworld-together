@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# GitHub Container Registry (GHCR) username (replace with your username)
+GHCR_USERNAME="MrGreaterThan"
+GHCR_REPOSITORY="rimworld-together"
+
 # Fetch the latest release version from GitHub API
 VERSION=$(curl -s https://api.github.com/repos/Byte-Nova/Rimworld-Together/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
@@ -9,10 +13,11 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-# Build the Docker image with the version as a tag
-docker build --build-arg VERSION=$VERSION -t rimworld-together:$VERSION .
+# Build the Docker image and tag it for GHCR with the version as a tag
+docker build --build-arg VERSION=$VERSION -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:$VERSION .
 
 # Tag the image with 'latest' as well
-docker tag rimworld-together:$VERSION rimworld-together:latest
+docker tag ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:$VERSION ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest
 
-echo "Docker image built and tagged as rimworld-together:$VERSION and rimworld-together:latest"
+# Output message
+echo "Docker image built and tagged as ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:$VERSION and ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest"
