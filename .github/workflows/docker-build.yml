@@ -27,6 +27,22 @@ jobs:
       - name: Make build.sh executable
         run: chmod +x ./build.sh
 
-      # Step 4: Run the build.sh script to build and push the Docker image
+      # Step 4: Run the build.sh script to build the Docker image (and tag it within the script)
       - name: Run build.sh
         run: ./build.sh
+
+      # Step 5: Log in to GitHub Container Registry (GHCR)
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 6: Push all Docker image tags to GHCR
+      - name: Push all Docker image tags
+        run: |
+          # List all local images with the created tags
+          docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | while read -r image; do
+            docker push "$image"
+          done
