@@ -14,7 +14,7 @@ This Unraid app template allows you to easily install and run the **Rimworld Tog
 - **Name:** `Rimworld-Together`
 - **Overview:** Leave blank
 - **Additional Requirements:** leave blank
-- **Repository:** `https://github.com/mrgreaterthan/rimworld-together`
+- **Repository:** `ghcr.io/mrgreaterthan/rimworld-together:latest`
     ##### Container tag may be changed from `latest` to a specific version of Rimworld Together if needed.
 - **Network Type:** `bridge`
 - **Console shell command:** `bash`
