@@ -19,15 +19,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker in GitHub Actions environment
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 3: Make sure the build.sh script is executable
+      # Step 3: Make build.sh executable
       - name: Make build.sh executable
         run: chmod +x ./build.sh
 
-      # Step 4: Run the build.sh script to build the Docker image (and tag it within the script)
+      # Step 4: Run build.sh (this should build and tag images for GHCR)
       - name: Run build.sh
         run: ./build.sh
 
@@ -39,10 +39,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 6: Push all Docker image tags to GHCR
+      # Step 6: Push all Docker image tags (filtered for ghcr.io)
       - name: Push all Docker image tags
         run: |
-          # List all local images with the created tags
-          docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | while read -r image; do
+          # List all local images tagged for ghcr.io and push them
+          docker images --format "{{.Repository}}:{{.Tag}}" | grep "ghcr.io" | while read -r image; do
             docker push "$image"
           done
