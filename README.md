@@ -44,7 +44,10 @@ git clone https://github.com/MrGreaterThan/rimworld-together.git
 ```
 
 ### 2. cd into ./rimworld-together and adjust the Provided `docker-compose.yml`
-
+```bash
+cd rimworld-together
+nano docker-compose.yml
+```
 - The `docker-compose.yml` file is preconfigured to pull the **Rimworld Together** Docker image from **GitHub Container Registry (GHCR)** and expose the necessary ports.
 - You can use it as-is or adjust it to suit your setup (e.g., change the port mapping or volume locations).
 - If you wish to use a specific version of the game server, you can edit the image tag in the `docker-compose.yml` file.
