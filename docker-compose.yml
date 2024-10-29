@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  rimworld-together:
+    image: rimworld-together:latest
+    container_name: rimworld-together
+    ports:
+      - "25555:25555"  # Map port 25555 from host to container
+    volumes:
+      - /opt/rimworld-together/Backups
+      - /opt/rimworld-together/Caravans
+      - /opt/rimworld-together/Core
+      - /opt/rimworld-together/Events
+      - /opt/rimworld-together/Factions
+      - /opt/rimworld-together/Logs
+      - /opt/rimworld-together/Maps
+      - /opt/rimworld-together/Saves
+      - /opt/rimworld-together/Settlements
+      - /opt/rimworld-together/Sites
+      - /opt/rimworld-together/Users
+    restart: unless-stopped  # Automatically restart the container if it stops
