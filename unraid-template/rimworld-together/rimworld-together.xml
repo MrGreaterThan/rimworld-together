@@ -1,0 +1,38 @@
+<Container>
+    <Name>Rimworld Together</Name>
+    <Repository>ghcr.io/MrGreaterThan/rimworld-together:latest</Repository>
+    <Registry>https://ghcr.io</Registry>
+    <Network>bridge</Network>
+    <MyIP/>
+    <Shell>bash</Shell>
+    <Privileged>false</Privileged>
+    <Support>https://github.com/MrGreaterThan/rimworld-together/<your-repo>/issues</Support>
+    <Project>https://github.com/Byte-Nova/Rimworld-Together/<your-repo></Project>
+    <Overview>This container runs the Rimworld Together game server.</Overview>
+    <Category>Games</Category>
+
+    <!-- Web UI if applicable -->
+    <WebUI>http://[IP]:[PORT:25555]</WebUI>
+
+    <!-- Port Mapping -->
+    <Config Name="Game Port" Target="25555" Default="25555" Mode="tcp" Description="Port for the game server" Type="Port" Required="true" Display="always" />
+
+    <!-- Volume Mappings from docker-compose -->
+    <Config Name="Backups" Target="/opt/rimworld-together/Backups" Default="/mnt/user/appdata/rimworld-together/Backups" Mode="rw" Description="Directory for game backups" Type="Path" Required="true" Display="always" />
+    <Config Name="Caravans" Target="/opt/rimworld-together/Caravans" Default="/mnt/user/appdata/rimworld-together/Caravans" Mode="rw" Description="Directory for caravans" Type="Path" Required="true" Display="always" />
+    <Config Name="Core" Target="/opt/rimworld-together/Core" Default="/mnt/user/appdata/rimworld-together/Core" Mode="rw" Description="Core directory" Type="Path" Required="true" Display="always" />
+    <Config Name="Events" Target="/opt/rimworld-together/Events" Default="/mnt/user/appdata/rimworld-together/Events" Mode="rw" Description="Directory for game events" Type="Path" Required="true" Display="always" />
+    <Config Name="Factions" Target="/opt/rimworld-together/Factions" Default="/mnt/user/appdata/rimworld-together/Factions" Mode="rw" Description="Directory for game factions" Type="Path" Required="true" Display="always" />
+    <Config Name="Logs" Target="/opt/rimworld-together/Logs" Default="/mnt/user/appdata/rimworld-together/Logs" Mode="rw" Description="Directory for game logs" Type="Path" Required="true" Display="always" />
+    <Config Name="Maps" Target="/opt/rimworld-together/Maps" Default="/mnt/user/appdata/rimworld-together/Maps" Mode="rw" Description="Directory for game maps" Type="Path" Required="true" Display="always" />
+    <Config Name="Saves" Target="/opt/rimworld-together/Saves" Default="/mnt/user/appdata/rimworld-together/Saves" Mode="rw" Description="Directory for save games" Type="Path" Required="true" Display="always" />
+    <Config Name="Settlements" Target="/opt/rimworld-together/Settlements" Default="/mnt/user/appdata/rimworld-together/Settlements" Mode="rw" Description="Directory for settlements" Type="Path" Required="true" Display="always" />
+    <Config Name="Sites" Target="/opt/rimworld-together/Sites" Default="/mnt/user/appdata/rimworld-together/Sites" Mode="rw" Description="Directory for game sites" Type="Path" Required="true" Display="always" />
+    <Config Name="Users" Target="/opt/rimworld-together/Users" Default="/mnt/user/appdata/rimworld-together/Users" Mode="rw" Description="Directory for user data" Type="Path" Required="true" Display="always" />
+
+    <!-- Environment Variables -->
+    <Config Name="Game Version" Target="VERSION" Default="latest" Mode="" Description="Game server version" Type="Variable" Required="false" Display="always" />
+
+    <ExtraParams/>
+    <PostArgs/>
+</Container>
