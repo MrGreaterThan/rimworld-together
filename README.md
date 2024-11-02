@@ -59,6 +59,11 @@ To start the game server using Docker Compose, navigate to the directory where t
 ```bash
 docker-compose up -d
 ```
+or
+```bash
+docker compose up -d
+```
+if using docker-compose-v2
 
 ### Container Updates
 To update the game server to a new version, you will need to pull the latest image (`docker-compose pull`) and restart the container (`docker-compose up -d`).
@@ -71,7 +76,6 @@ You can view real-time logs of the game server by running `docker-compose logs -
 
 
 ## Running the Game Server on Unraid
-
 You can easily deploy the Rimworld Together game server on Unraid using the provided Unraid app template. Follow the steps here ([unraid-template/README.md](unraid-template/README.md)) to install and configure the game server.
 
 
