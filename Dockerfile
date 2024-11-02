@@ -25,6 +25,9 @@ COPY --from=build /build /opt/rimworld-together
 # Set restrictive permissions on GameServer executable
 RUN chmod 750 /opt/rimworld-together/GameServer
 
+# Set the working directory
+WORKDIR /opt/rimworld-together/Data
+
 # Initialize the server by running it once during the build and passing "quit" to close it
 RUN echo "quit" | /opt/rimworld-together/GameServer || true
 
@@ -32,18 +35,7 @@ RUN echo "quit" | /opt/rimworld-together/GameServer || true
 EXPOSE 25555
 
 # Expose each of the persistent directories
-VOLUME ["/opt/rimworld-together/Backups"]
-VOLUME ["/opt/rimworld-together/Caravans"]
-VOLUME ["/opt/rimworld-together/Core"]
-VOLUME ["/opt/rimworld-together/Events"]
-VOLUME ["/opt/rimworld-together/Factions"]
-VOLUME ["/opt/rimworld-together/Logs"]
-VOLUME ["/opt/rimworld-together/Maps"]
-VOLUME ["/opt/rimworld-together/Saves"]
-VOLUME ["/opt/rimworld-together/Settlements"]
-VOLUME ["/opt/rimworld-together/Sites"]
-VOLUME ["/opt/rimworld-together/Users"]
+VOLUME ["/opt/rimworld-together/Data"]
 
-# Set the working directory and entrypoint
-WORKDIR /opt/rimworld-together
+#Set the entry point
 ENTRYPOINT ["/opt/rimworld-together/GameServer"]

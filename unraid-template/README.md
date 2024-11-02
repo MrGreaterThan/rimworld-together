@@ -31,39 +31,9 @@ This Unraid app template allows you to easily install and run the **Rimworld Tog
 
 #### Volume Mappings:
 Make all volumes read/write
-- **Backups**: Path to store game backups.
-  - Container Path: `/opt/rimworld-together/Backups`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Backups`.
-- **Caravans**: Path for caravans.
-  - Container Path: `/opt/rimworld-together/Caravans`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Caravans`.
-- **Core**: Path for most configuration files.
-  - Container Path: `/opt/rimworld-together/Core`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Core`.
-- **Events**: Path for game events.
-  - Container Path: `/opt/rimworld-together/Events`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Events`.
-- **Factions**: Path for factions.
-  - Container Path: `/opt/rimworld-together/Factions`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Factions`.
-- **Logs**: Path for logs.
-  - Container Path: `/opt/rimworld-together/Logs`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Logs`.
-- **Maps**: Path for saved maps.
-  - Container Path: `/opt/rimworld-together/Maps`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Maps`.
-- **Saves**: Path for saved games.
-  - Container Path: `/opt/rimworld-together/Saves`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Saves`.
-- **Settlements**: Path for settlements.
-  - Container Path: `/opt/rimworld-together/Settlements`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Settlements`.
-- **Sites**: Path for sites.
-  - Container Path: `/opt/rimworld-together/Sites`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Sites`.
-- **Users**: Path for user data.
-  - Container Path: `/opt/rimworld-together/Users`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Users`.
+- **Data**: Path to store saved data and configs.
+  - Container Path: `/opt/rimworld-together/Data`
+  - Default Host Path: `/mnt/user/appdata/rimworld-together/Data`.
 
 ### 4. Start the Container
 
