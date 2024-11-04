@@ -33,7 +33,7 @@ This Unraid app template allows you to easily install and run the **Rimworld Tog
 Make all volumes read/write
 - **Data**: Path to store saved data and configs.
   - Container Path: `/opt/rimworld-together/Data`
-  - Default Host Path: `/mnt/user/appdata/rimworld-together/Data`.
+  - Default Host Path: `/mnt/user/appdata/rimworld-together`.
 
 ### 4. Start the Container
 
