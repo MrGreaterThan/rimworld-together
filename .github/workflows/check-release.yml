@@ -43,16 +43,16 @@ jobs:
           latest_release=$(gh api repos/${repo_owner}/${repo_name}/releases/latest --jq '.tag_name')
           echo "LATEST_RELEASE=$latest_release" >> $GITHUB_ENV
 
-      # Step 4: Compare with the previous release
+      # Step 4: Compare with the previous release (stored in cache)
       - name: Check for new release
         id: check_release
-        shell: bash
         run: |
           echo "DEBUG: Starting the Check for New Release step"
           echo "DEBUG: Current directory: $(pwd)"
           echo "DEBUG: Files in the directory:"
           ls -la
       
+          # Check if the previous release file exists; if not, initialize it
           if [ -f .previous_release ]; then
             previous_release=$(cat .previous_release)
           else
@@ -60,20 +60,20 @@ jobs:
             previous_release="none"
           fi
       
+          # Get the latest release version
           latest_release="${{ env.LATEST_RELEASE }}"
           echo "Previous release: $previous_release"
           echo "Latest release: $latest_release"
       
+          # Compare and decide whether to update .previous_release
           if [ "$previous_release" != "$latest_release" ]; then
             echo "New release detected!"
-            echo "$latest_release" > .previous_release
+            echo "$latest_release" > .previous_release  # Update with new release
             echo "NEW_RELEASE=true" >> $GITHUB_ENV
           else
             echo "No new release."
             echo "NEW_RELEASE=false" >> $GITHUB_ENV
           fi
-      
-          echo "DEBUG: Check for New Release step completed"
 
 
       # Step 5: Delete Previous Cache
