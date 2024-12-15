@@ -59,7 +59,13 @@ jobs:
             echo "NEW_RELEASE=false" >> $GITHUB_ENV
           fi
 
-      # Step 5: Cache the new release information if a new release is detected
+      # Step 5: Delete old cache so new version number can be recorded
+      - name: Delete existing cache
+        if: env.NEW_RELEASE == 'true'
+        run: |
+          rm -f .previous_release
+          
+      # Step 6: Cache the new release information if a new release is detected
       - name: Cache the new release info
         if: env.NEW_RELEASE == 'true'
         uses: actions/cache@v3
@@ -67,7 +73,7 @@ jobs:
           path: .previous_release
           key: previous-release
 
-      # Step 6: Trigger the docker-build.yml workflow if a new release is detected
+      # Step 7: Trigger the docker-build.yml workflow if a new release is detected
       - name: Trigger Docker build workflow
         if: env.NEW_RELEASE == 'true'
         run: |
