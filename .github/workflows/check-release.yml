@@ -5,25 +5,32 @@ on:
     - cron: '0 * * * *'  # Every hour
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write # Required to delete the cache
+
 jobs:
   check_release:
     runs-on: ubuntu-latest
 
+    env:
+      cache-key: previous-release # Key for the cache
+
     steps:
-      # Step 1: Set up GitHub CLI (gh) to access the GitHub API
+      # Step 1: Set up GitHub CLI
       - name: Set up GitHub CLI
         run: |
           sudo apt-get install -y gh
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set the GH_TOKEN environment variable
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 2: Restore cache for the previous release information
-      - name: Restore previous release cache
-        id: cache_previous_release
-        uses: actions/cache@v3
+      # Step 2: Restore Cache
+      - name: Restore Cache
+        id: cache-restore
+        uses: actions/cache/restore@v3
         with:
           path: .previous_release
-          key: previous-release
+          key: ${{ env.cache-key }}
 
       # Step 3: Fetch the latest release from the other repository
       - name: Get latest release from other repository
@@ -33,23 +40,20 @@ jobs:
         run: |
           repo_owner="Byte-Nova"
           repo_name="Rimworld-Together"
-
-          # Use GitHub CLI to get the latest release tag
           latest_release=$(gh api repos/${repo_owner}/${repo_name}/releases/latest --jq '.tag_name')
-          echo "Latest release: $latest_release"
-
-          # Save the latest release tag in an environment file to use later
           echo "LATEST_RELEASE=$latest_release" >> $GITHUB_ENV
 
-      # Step 4: Compare with the previous release (stored in cache)
+      # Step 4: Compare with the previous release
       - name: Check for new release
         id: check_release
         run: |
-          previous_release=$(cat .previous_release || echo "none")
+          if [ ! -f .previous_release ]; then
+            echo "none" > .previous_release
+          fi
+          previous_release=$(cat .previous_release)
           latest_release="${{ env.LATEST_RELEASE }}"
           echo "Previous release: $previous_release"
           echo "Latest release: $latest_release"
-
           if [ "$previous_release" != "$latest_release" ]; then
             echo "New release detected!"
             echo "$latest_release" > .previous_release
@@ -57,21 +61,24 @@ jobs:
           else
             echo "No new release."
             echo "NEW_RELEASE=false" >> $GITHUB_ENV
-          fi
 
-      # Step 5: Delete old cache so new version number can be recorded
-      - name: Delete existing cache
-        if: env.NEW_RELEASE == 'true'
+      # Step 5: Delete Previous Cache
+      - name: Delete Previous Cache
+        if: env.NEW_RELEASE == 'true' && steps.cache-restore.outputs.cache-hit
+        continue-on-error: true
         run: |
-          rm -f .previous_release
-          
-      # Step 6: Cache the new release information if a new release is detected
-      - name: Cache the new release info
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete "${{ env.cache-key }}" --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 6: Save New Cache
+      - name: Save Cache
         if: env.NEW_RELEASE == 'true'
-        uses: actions/cache@v3
+        uses: actions/cache/save@v3
         with:
           path: .previous_release
-          key: previous-release
+          key: ${{ env.cache-key }}
 
       # Step 7: Trigger the docker-build.yml workflow if a new release is detected
       - name: Trigger Docker build workflow
