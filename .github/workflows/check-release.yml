@@ -77,15 +77,22 @@ jobs:
 
 
       # Step 5: Delete Previous Cache
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Debug Current Directory
+        run: |
+          echo "Current working directory: $(pwd)"
+          ls -la
+      
       - name: Delete Previous Cache
         if: env.NEW_RELEASE == 'true' && steps.cache-restore.outputs.cache-hit == 'true'
         continue-on-error: true
         run: |
-          echo "DEBUG: Installing gh-actions-cache extension..."
           gh extension install actions/gh-actions-cache --force
-      
-          echo "DEBUG: Deleting cache with key: ${{ env.cache-key }}"
+          echo "Deleting cache with key: ${{ env.cache-key }}"
           gh actions-cache delete "${{ env.cache-key }}" --confirm
+        working-directory: ${{ github.workspace }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
