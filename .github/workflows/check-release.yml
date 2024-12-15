@@ -47,11 +47,7 @@ jobs:
       - name: Check for new release
         id: check_release
         run: |
-          echo "DEBUG: Starting the Check for New Release step"
-          echo "DEBUG: Current directory: $(pwd)"
-          echo "DEBUG: Files in the directory:"
-          ls -la
-      
+        
           # Check if the previous release file exists; if not, initialize it
           if [ -f .previous_release ]; then
             previous_release=$(cat .previous_release)
@@ -101,8 +97,9 @@ jobs:
         if: env.NEW_RELEASE == 'true'
         run: |
           echo "Recreating .previous_release..."
+          latest_release="${{ env.LATEST_RELEASE }}"
           if [ ! -f .previous_release ]; then
-            echo "none" > .previous_release
+            echo "$latest_release" > .previous_release  # Update with new release
           fi
           cat .previous_release
       
