@@ -46,14 +46,24 @@ jobs:
       # Step 4: Compare with the previous release
       - name: Check for new release
         id: check_release
+        shell: bash
         run: |
-          if [ ! -f .previous_release ]; then
-            echo "none" > .previous_release
+          echo "DEBUG: Starting the Check for New Release step"
+          echo "DEBUG: Current directory: $(pwd)"
+          echo "DEBUG: Files in the directory:"
+          ls -la
+      
+          if [ -f .previous_release ]; then
+            previous_release=$(cat .previous_release)
+          else
+            echo "DEBUG: .previous_release file not found. Initializing..."
+            previous_release="none"
           fi
-          previous_release=$(cat .previous_release)
+      
           latest_release="${{ env.LATEST_RELEASE }}"
           echo "Previous release: $previous_release"
           echo "Latest release: $latest_release"
+      
           if [ "$previous_release" != "$latest_release" ]; then
             echo "New release detected!"
             echo "$latest_release" > .previous_release
@@ -61,6 +71,10 @@ jobs:
           else
             echo "No new release."
             echo "NEW_RELEASE=false" >> $GITHUB_ENV
+          fi
+      
+          echo "DEBUG: Check for New Release step completed"
+
 
       # Step 5: Delete Previous Cache
       - name: Delete Previous Cache
