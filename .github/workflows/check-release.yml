@@ -78,10 +78,13 @@ jobs:
 
       # Step 5: Delete Previous Cache
       - name: Delete Previous Cache
-        if: env.NEW_RELEASE == 'true' && steps.cache-restore.outputs.cache-hit
+        if: env.NEW_RELEASE == 'true' && steps.cache-restore.outputs.cache-hit == 'true'
         continue-on-error: true
         run: |
-          gh extension install actions/gh-actions-cache
+          echo "DEBUG: Installing gh-actions-cache extension..."
+          gh extension install actions/gh-actions-cache --force
+      
+          echo "DEBUG: Deleting cache with key: ${{ env.cache-key }}"
           gh actions-cache delete "${{ env.cache-key }}" --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
