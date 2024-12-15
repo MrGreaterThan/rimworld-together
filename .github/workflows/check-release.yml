@@ -97,6 +97,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 6: Save New Cache
+      - name: Recreate Cache File
+        if: env.NEW_RELEASE == 'true'
+        run: |
+          echo "Recreating .previous_release..."
+          if [ ! -f .previous_release ]; then
+            echo "none" > .previous_release
+          fi
+          cat .previous_release
+      
       - name: Save Cache
         if: env.NEW_RELEASE == 'true'
         uses: actions/cache/save@v3
